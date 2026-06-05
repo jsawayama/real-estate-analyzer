@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="不動産分析アイコン">
+  <rect width="512" height="512" rx="96" fill="#0f766e"/>
+  <path d="M112 402V214l144-104 144 104v188h-88V292H200v110h-88z" fill="#ffffff"/>
+  <path d="M192 192h128v48H192z" fill="#bde7df"/>
+  <path d="M128 390c66-86 132-104 196-52 22 18 42 34 60 48" fill="none" stroke="#f4c164" stroke-width="28" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0f766e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="不動産分析">
+    <title>不動産投資アナライザー</title>
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="icon" href="./assets/app-icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="./assets/app-icon.svg">
+    <link rel="stylesheet" href="./src/styles.css?v=help-pwa-1">
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="header-media" aria-hidden="true"></div>
+      <nav class="topbar" aria-label="主要ナビゲーション">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">RE</span>
+          <span>不動産投資アナライザー</span>
+        </div>
+        <div class="status-pill">
+          <span class="dot"></span>
+          <span id="api-status">API接続確認中</span>
+        </div>
+      </nav>
+      <section class="hero-copy">
+        <p class="eyebrow">Tokyo rent, land price, yield simulator</p>
+        <h1>家賃相場と収益性を同じ画面で判断する</h1>
+        <p>
+          東京主要区の家賃ヒートマップ、地価推移、ローン返済を含む投資指標を
+          ひとつのワークスペースで確認できます。
+        </p>
+      </section>
+    </header>
+
+    <main class="workspace">
+      <section class="panel filters-panel" aria-label="検索条件">
+        <div class="section-title">
+          <span class="tool-icon" aria-hidden="true">F</span>
+          <div>
+            <h2>条件</h2>
+            <p>家賃相場マップの絞り込み</p>
+          </div>
+        </div>
+        <label>
+          都道府県
+          <select id="prefecture">
+            <option value="tokyo">東京都</option>
+          </select>
+        </label>
+        <label>
+          市区町村
+          <select id="ward-filter"></select>
+        </label>
+        <label>
+          最寄り駅
+          <select id="station-filter"></select>
+        </label>
+        <fieldset>
+          <legend>間取り</legend>
+          <div class="segmented" id="layout-filter"></div>
+        </fieldset>
+        <label>
+          賃料上限 <span id="rent-max-label"></span>
+          <input id="rent-max" type="range" min="80000" max="360000" step="10000" value="240000">
+        </label>
+        <label>
+          築年数上限 <span id="age-max-label"></span>
+          <input id="age-max" type="range" min="0" max="45" step="1" value="25">
+        </label>
+        <label>
+          駅徒歩上限 <span id="walk-max-label"></span>
+          <input id="walk-max" type="range" min="1" max="25" step="1" value="12">
+        </label>
+        <div class="inline-actions">
+          <button id="reset-filters" type="button" title="条件を初期化" aria-label="条件を初期化">R</button>
+          <button id="export-csv" type="button" title="シミュレーション結果をCSVで保存" aria-label="CSV出力">CSV</button>
+          <button id="print-report" type="button" title="印刷またはPDF保存" aria-label="印刷またはPDF保存">PDF</button>
+        </div>
+      </section>
+
+      <section class="panel map-panel" aria-labelledby="map-title">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Rent heatmap</p>
+            <h2 id="map-title">エリア別家賃相場</h2>
+          </div>
+          <p id="result-count" class="metric-chip"></p>
+        </div>
+        <div id="rent-map" class="rent-map" role="img" aria-label="東京主要区の家賃ヒートマップと物件ピン"></div>
+        <div id="property-detail" class="detail-drawer" aria-live="polite"></div>
+      </section>
+
+      <section class="panel simulator-panel" aria-labelledby="sim-title">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Yield simulator</p>
+            <h2 id="sim-title">物件収益シミュレーター</h2>
+          </div>
+          <span id="investment-grade" class="grade"></span>
+        </div>
+        <div class="sim-grid">
+          <div class="input-grid" id="sim-inputs"></div>
+          <div class="metrics-grid" id="metrics"></div>
+        </div>
+      </section>
+
+      <section class="panel live-panel" aria-labelledby="live-title">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Live public data</p>
+            <h2 id="live-title">実データ接続</h2>
+          </div>
+          <span id="live-badge" class="metric-chip">確認中</span>
+        </div>
+        <div id="live-summary" class="live-summary"></div>
+        <div id="live-table" class="live-table"></div>
+      </section>
+
+      <section class="panel trends-panel" aria-labelledby="trend-title">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Land price trend</p>
+            <h2 id="trend-title">地価・路線価トレンド</h2>
+          </div>
+          <span class="metric-chip">2015-2024</span>
+        </div>
+        <div class="trend-layout">
+          <div id="land-chart" class="chart" aria-label="地価推移グラフ"></div>
+          <div id="trend-list" class="trend-list"></div>
+        </div>
+      </section>
+
+      <section class="panel sensitivity-panel" aria-labelledby="sensitivity-title">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Sensitivity</p>
+            <h2 id="sensitivity-title">感度分析</h2>
+          </div>
+          <span class="metric-chip">空室率 x 金利</span>
+        </div>
+        <div id="sensitivity-chart" class="chart"></div>
+      </section>
+
+      <section class="notice-band" aria-label="データと免責事項">
+        <h2>データ鮮度と注意事項</h2>
+        <p>
+          国土交通省APIから取得した情報は出典と更新頻度を確認して利用してください。公示地価は年1回、基準地価は年1回、
+          路線価は年1回の更新が一般的です。家賃相場は公的API単体では取得できないため、民間APIまたは自社データ連携が必要です。
+        </p>
+      </section>
+    </main>
+
+    <script type="module" src="./src/app.mjs"></script>
+  </body>
+</html>

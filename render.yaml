@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: real-estate-analyzer
+    runtime: python
+    plan: free
+    buildCommand: ""
+    startCommand: "HOST=0.0.0.0 python server.py"
+    envVars:
+      - key: REINFOLIB_API_KEY
+        sync: false
+      - key: REINFOLIB_CACHE_TTL_SECONDS
+        value: "1800"

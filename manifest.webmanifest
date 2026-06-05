@@ -1,0 +1,19 @@
+{
+  "name": "不動産投資アナライザー",
+  "short_name": "不動産分析",
+  "description": "家賃相場、地価、収益シミュレーションを確認する不動産投資分析アプリ",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f6f2",
+  "theme_color": "#0f766e",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./assets/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
